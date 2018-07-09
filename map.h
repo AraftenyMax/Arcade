@@ -15,12 +15,21 @@ public:
     Map(int width, int height);
     void Draw();
     void Update();
+    void checkNearestMeshes();
+    void checkNearestEnemies();
+    void checkNearestBonuses();
+    void checkNearestWeapons();
+    void checkBounds();
     QList<Mesh*> Meshes;
     QList<Enemy*> Enemies;
     QList<Bonus*> Bonuses;
     QList<Weapon*> Weapons;
     QList<QGraphicsRectItem*> Markers;
     Player *player = nullptr;
+signals:
+    void onKeyPressed(QString action, int x, int y);
+public slots:
+    void tryPerformAction(QString action, int x, int y);
 private:
     int width, height;
 };

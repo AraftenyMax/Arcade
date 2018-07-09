@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "levelconstructor.h"
+#include "playwindow.h"
 #include "ui_mainwindow.h"
 #include "myrect.h"
 
@@ -28,4 +29,10 @@ void MainWindow::on_constructorButton_clicked()
 void MainWindow::on_exitButton_clicked()
 {
     QCoreApplication::quit();
+}
+
+void MainWindow::on_gameButton_clicked()
+{
+    PlayWindow *window = new PlayWindow();
+    window->show();
 }

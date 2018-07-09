@@ -1,6 +1,7 @@
 #ifndef MESH_H
 #define MESH_H
 #include <QString>
+#include <QGraphicsRectItem>
 
 class Mesh
 {

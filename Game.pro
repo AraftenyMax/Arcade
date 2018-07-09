@@ -16,6 +16,7 @@ TEMPLATE = app
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
+QMAKE_CXXFLAGS -= -fpermissive
 
 # You can also make your code fail to compile if you use deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -34,7 +35,9 @@ SOURCES += \
     levelconstructor.cpp \
     lvlconstructorscene.cpp \
     weapon.cpp \
-    bonus.cpp
+    bonus.cpp \
+    playwindow.cpp \
+    playermarker.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -46,8 +49,11 @@ HEADERS += \
     levelconstructor.h \
     lvlconstructorscene.h \
     weapon.h \
-    bonus.h
+    bonus.h \
+    playwindow.h \
+    playermarker.h
 
 FORMS += \
         mainwindow.ui \
-    levelconstructor.ui
+    levelconstructor.ui \
+    playwindow.ui

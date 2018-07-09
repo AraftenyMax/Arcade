@@ -137,6 +137,7 @@ void LevelConstructor::loadMap()
         return;
     }else{
         QFile file(path);
+        qDebug() << path;
         if(!file.open(QIODevice::ReadOnly))
         {
             QMessageBox msg;

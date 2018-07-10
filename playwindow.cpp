@@ -5,7 +5,6 @@
 #include "mesh.h"
 #include "map.h"
 #include "bonus.h"
-#include "playermarker.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
@@ -39,13 +38,13 @@ void PlayWindow::loadMap(QString path)
     while(!in.atEnd())
     {
         QString line = in.readLine();
-        qDebug() << line;
         QStringList data = line.split(',');
         int x = data[1].toInt();
         int y = data[2].toInt();
         createGameObject(x, y, data[0]);
     }
     file.close();
+    map->startWatching();
 }
 
 void PlayWindow::createGameObject(int x, int y, QString type)
@@ -59,40 +58,44 @@ void PlayWindow::createGameObject(int x, int y, QString type)
         return;
     }
     if("Mesh" == type){
-        Mesh *mesh = new Mesh(x, y);
+        Mesh *mesh = new Mesh();
+        mesh->setRect(x, y, Mesh::width, Mesh::height);
+        mesh->setBrush(QBrush(Qt::black));
+        mesh->setX(x);
+        mesh->setY(y);
+        map->map[Map::getPair(x, y)] = Mesh::markerType;
         map->Meshes.append(mesh);
-        rect = new QGraphicsRectItem(x, y, Mesh::width, Mesh::height);
-        rect->setBrush(QBrush(Qt::black));
+        markers.append(mesh);
     }
     if("Enemy" == type){
-        Enemy *enemy = new Enemy(x, y, type);
+        Enemy *enemy = new Enemy();
+        enemy->setRect(x, y, Enemy::width, Enemy::height);
+        enemy->setX(x);
+        enemy->setY(y);
+        enemy->setBrush(QBrush(Qt::red));
+        map->map[Map::getPair(x, y)] = Map::BLANK;
         map->Enemies.append(enemy);
-        rect = new QGraphicsRectItem(x, y, Enemy::width, Enemy::height);
-        rect->setBrush(QBrush(Qt::red));
+        markers.append(enemy);
+        return;
     }
     if("Player" == type){
-        if (map->player != nullptr)
-        {
-            QMessageBox msg;
-            msg.setText("You have created player already.");
-            msg.exec();
-            return;
-        }
-        Player *player = new Player(x, y);
-        map->player = player;
-        PlayerMarker *playerRect = new PlayerMarker();
+        Player *playerRect = new Player();
         playerRect->setFlag(QGraphicsItem::ItemIsFocusable);
         playerRect->setRect(x, y, Player::width, Player::height);
         playerRect->setBrush(QBrush(Qt::green));
         playerRect->setFocus();
+        playerRect->setX(x);
+        playerRect->setY(y);
+        map->map[Map::getPair(x, y)] = Player::markerType;
+        map->setPlayer(playerRect);
         markers.append(playerRect);
-        connect(playerRect, SIGNAL(onKeyPress(QString, int, int)), map, SLOT(chooseAction(QString,int,int)));
         return;
     }
     if ("HealthBonus" == type || "AttackBonus" == type)
     {
         Bonus *bonus = new Bonus(x, y, type);
         map->Bonuses.append(bonus);
+        map->map[Map::getPair(x, y)] = Map::BLANK;
         rect = new QGraphicsRectItem(x, y, Bonus::width, Bonus::height);
         rect->setBrush(QBrush(type == "HealthBonus" ? Qt::blue : Qt::cyan));
     }
@@ -100,10 +103,10 @@ void PlayWindow::createGameObject(int x, int y, QString type)
     {
         Weapon *gun = new Weapon(x, y, type);
         map->Weapons.append(gun);
+        map->map[Map::getPair(x, y)] = Map::BLANK;
         rect = new QGraphicsRectItem(x, y, Weapon::width, Weapon::height);
         rect->setBrush(QBrush(type == "Gun1" ? Qt::yellow : Qt::magenta));
     }
-    markers.append(rect);
 }
 
 void PlayWindow::drawMap()

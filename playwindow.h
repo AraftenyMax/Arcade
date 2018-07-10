@@ -2,6 +2,7 @@
 #define PLAYWINDOW_H
 
 #include <QDialog>
+#include <QObject>
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
 #include <map.h>
@@ -25,9 +26,9 @@ public:
 private:
     Ui::PlayWindow *ui;
     QGraphicsScene *scene;
-    int width = 601;
-    int height = 371;
-    QString testMap = "G:/Development/build-Game-Desktop_Qt_5_10_1_MinGW_32bit-Debug/map1.csv";
+    int width = 600;
+    int height = 300;
+    QString testMap = "G:/Development/build-Game-Desktop_Qt_5_10_1_MinGW_32bit-Debug/anothermap.csv";
     QList<QGraphicsRectItem*> markers;
     Map *map;
 };

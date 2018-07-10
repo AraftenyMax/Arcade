@@ -63,8 +63,8 @@ private:
     QString mode = "Create";
     LvlConstructorScene *scene;
     Map *map;
-    const int width = 601;
-    const int height = 371;
+    const int width = 600;
+    const int height = 300;
 };
 
 #endif // LEVELCONSTRUCTOR_H

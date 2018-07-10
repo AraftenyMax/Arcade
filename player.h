@@ -4,21 +4,21 @@
 #include <QObject>
 #include <QKeyEvent>
 
-class Player : QObject, public QGraphicsRectItem
+class Player : public QObject, public QGraphicsRectItem
 {
     Q_OBJECT
 public:
     Player();
-    Player(int x, int y);
     QString serialize();
     void keyPressEvent(QKeyEvent *event);
     static const int width = 10, height = 10;
+    static const int markerType = 0;
+signals:
+    void onKeyPressed(QString action, int x, int y);
 private:
     int healthPoints = 100;
-    int x, y;
     int visibleRange = 50;
     QString name;
-    QRect *rect;
 };
 
 #endif // PLAYER_H

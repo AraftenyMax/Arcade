@@ -36,8 +36,7 @@ SOURCES += \
     lvlconstructorscene.cpp \
     weapon.cpp \
     bonus.cpp \
-    playwindow.cpp \
-    playermarker.cpp
+    playwindow.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -50,8 +49,7 @@ HEADERS += \
     lvlconstructorscene.h \
     weapon.h \
     bonus.h \
-    playwindow.h \
-    playermarker.h
+    playwindow.h
 
 FORMS += \
         mainwindow.ui \

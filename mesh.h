@@ -2,16 +2,17 @@
 #define MESH_H
 #include <QString>
 #include <QGraphicsRectItem>
+#include <QObject>
 
-class Mesh
+class Mesh : public QObject, public QGraphicsRectItem
 {
+    Q_OBJECT
 public:
-    Mesh(int x, int y);
+    Mesh();
     QString serialize();
     static const int width = 10, height = 10;
+    static const int markerType = -1;
 private:
-    int x;
-    int y;
 };
 
 #endif // MESH_H

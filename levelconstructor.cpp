@@ -22,7 +22,7 @@ LevelConstructor::LevelConstructor(QWidget *parent) :
     ui(new Ui::LevelConstructor)
 {
     ui->setupUi(this);
-    map = new Map(200, 200);
+    map = new Map(60, 30);
     scene = new LvlConstructorScene();
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -175,6 +175,8 @@ void LevelConstructor::saveMap(QStringList *mapData)
 void LevelConstructor::createObject(int x, int y)
 {
     QGraphicsRectItem *rect;
+    x -= x%10;
+    y -= y%10;
     if (state == "")
     {
         QMessageBox msg;
@@ -183,13 +185,13 @@ void LevelConstructor::createObject(int x, int y)
         return;
     }
     if("Mesh" == state){
-        Mesh *mesh = new Mesh(x, y);
+        Mesh *mesh = new Mesh();
         map->Meshes.append(mesh);
         rect = new QGraphicsRectItem(x, y, Mesh::width, Mesh::height);
         rect->setBrush(QBrush(Qt::black));
     }
     if("Enemy" == state){
-        Enemy *enemy = new Enemy(x, y, state);
+        Enemy *enemy = new Enemy();
         map->Enemies.append(enemy);
         rect = new QGraphicsRectItem(x, y, Enemy::width, Enemy::height);
         rect->setBrush(QBrush(Qt::red));
@@ -202,7 +204,7 @@ void LevelConstructor::createObject(int x, int y)
             msg.exec();
             return;
         }
-        Player *player = new Player(x, y);
+        Player *player = new Player();
         map->player = player;
         rect = new QGraphicsRectItem(x, y, Player::width, Player::height);
         rect->setBrush(QBrush(Qt::green));
@@ -228,10 +230,9 @@ void LevelConstructor::createObject(int x, int y)
 void LevelConstructor::deleteObject(int x, int y)
 {
     QPointF *point = new QPointF(x, y);
-    foreach (QGraphicsRectItem *rect, map->Markers) {
+    foreach (QGraphicsRectItem *rect, map->Markers)
         if(rect->contains(*point))
             scene->removeItem(rect);
-    }
 }
 
 void LevelConstructor::on_loadMap_clicked()

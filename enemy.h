@@ -3,6 +3,7 @@
 #include <QString>
 #include <QGraphicsRectItem>
 #include <QObject>
+#include <QPair>
 
 
 class Enemy: public QObject, public QGraphicsRectItem
@@ -12,8 +13,13 @@ public:
     Enemy();
     QString serialize();
     void makeAgro();
-    void move(QString direction);
+    bool isItAgro();
+    void move(int xCeil, int yCeil);
+    void setCoords(int x, int y);
     bool isPlayerNear(int playerX, int playerY);
+    QPair<int, int> getCoords();
+    int currentX, currentY;
+    static const int markerType = -1;
     static const int width = 10, height = 10;
 private:
     QString name;

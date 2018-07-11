@@ -48,7 +48,6 @@ HEADERS += \
     levelconstructor.h \
     lvlconstructorscene.h \
     weapon.h \
-    bonus.h \
     playwindow.h
 
 FORMS += \

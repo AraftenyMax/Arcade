@@ -22,12 +22,13 @@ LevelConstructor::LevelConstructor(QWidget *parent) :
     ui(new Ui::LevelConstructor)
 {
     ui->setupUi(this);
-    map = new Map(60, 30);
+    map = new Map(width, height);
     scene = new LvlConstructorScene();
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setFixedSize(width, height);
-    scene->setSceneRect(0,0, width, height);
+    ui->graphicsView->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    scene->setSceneRect(0, 0, width, height);
     connect(scene, SIGNAL(mousePressed(int,int)), this, SLOT(obtainCoordinates(int,int)));
     ui->graphicsView->setScene(scene);
 }
@@ -174,6 +175,7 @@ void LevelConstructor::saveMap(QStringList *mapData)
 
 void LevelConstructor::createObject(int x, int y)
 {
+    qDebug() << x << ":" << y;
     QGraphicsRectItem *rect;
     x -= x%10;
     y -= y%10;
@@ -187,12 +189,16 @@ void LevelConstructor::createObject(int x, int y)
     if("Mesh" == state){
         Mesh *mesh = new Mesh();
         map->Meshes.append(mesh);
+        mesh->setX(x);
+        mesh->setY(y);
         rect = new QGraphicsRectItem(x, y, Mesh::width, Mesh::height);
         rect->setBrush(QBrush(Qt::black));
     }
     if("Enemy" == state){
         Enemy *enemy = new Enemy();
         map->Enemies.append(enemy);
+        enemy->setX(x);
+        enemy->setY(y);
         rect = new QGraphicsRectItem(x, y, Enemy::width, Enemy::height);
         rect->setBrush(QBrush(Qt::red));
     }
@@ -206,6 +212,8 @@ void LevelConstructor::createObject(int x, int y)
         }
         Player *player = new Player();
         map->player = player;
+        player->setX(x);
+        player->setY(y);
         rect = new QGraphicsRectItem(x, y, Player::width, Player::height);
         rect->setBrush(QBrush(Qt::green));
     }

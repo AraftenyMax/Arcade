@@ -20,9 +20,10 @@ PlayWindow::PlayWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     map = new Map(width, height);
-    scene = new QGraphicsScene();
+    scene = new QGraphicsScene(this);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    //ui->graphicsView->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     ui->graphicsView->setFixedSize(width, height);
     scene->setSceneRect(0, 0, width, height);
     ui->graphicsView->setScene(scene);
@@ -50,6 +51,8 @@ void PlayWindow::loadMap(QString path)
 void PlayWindow::createGameObject(int x, int y, QString type)
 {
     QGraphicsRectItem *rect;
+    int xCeil = x/10;
+    int yCeil = y/10;
     if (type == "")
     {
         QMessageBox msg;
@@ -61,19 +64,16 @@ void PlayWindow::createGameObject(int x, int y, QString type)
         Mesh *mesh = new Mesh();
         mesh->setRect(x, y, Mesh::width, Mesh::height);
         mesh->setBrush(QBrush(Qt::black));
-        mesh->setX(x);
-        mesh->setY(y);
-        map->map[Map::getPair(x, y)] = Mesh::markerType;
+        map->map[Map::getPair(xCeil, yCeil)] = Mesh::markerType;
         map->Meshes.append(mesh);
         markers.append(mesh);
     }
     if("Enemy" == type){
         Enemy *enemy = new Enemy();
         enemy->setRect(x, y, Enemy::width, Enemy::height);
-        enemy->setX(x);
-        enemy->setY(y);
         enemy->setBrush(QBrush(Qt::red));
-        map->map[Map::getPair(x, y)] = Map::BLANK;
+        enemy->setCoords(x, y);
+        map->map[Map::getPair(xCeil, yCeil)] = Mesh::markerType;
         map->Enemies.append(enemy);
         markers.append(enemy);
         return;
@@ -84,9 +84,8 @@ void PlayWindow::createGameObject(int x, int y, QString type)
         playerRect->setRect(x, y, Player::width, Player::height);
         playerRect->setBrush(QBrush(Qt::green));
         playerRect->setFocus();
-        playerRect->setX(x);
-        playerRect->setY(y);
-        map->map[Map::getPair(x, y)] = Player::markerType;
+        playerRect->setCoords(x, y);
+        map->map[Map::getPair(xCeil, yCeil)] = Player::markerType;
         map->setPlayer(playerRect);
         markers.append(playerRect);
         return;
@@ -95,7 +94,7 @@ void PlayWindow::createGameObject(int x, int y, QString type)
     {
         Bonus *bonus = new Bonus(x, y, type);
         map->Bonuses.append(bonus);
-        map->map[Map::getPair(x, y)] = Map::BLANK;
+        map->map[Map::getPair(xCeil, yCeil)] = Map::BLANK;
         rect = new QGraphicsRectItem(x, y, Bonus::width, Bonus::height);
         rect->setBrush(QBrush(type == "HealthBonus" ? Qt::blue : Qt::cyan));
     }
@@ -103,7 +102,7 @@ void PlayWindow::createGameObject(int x, int y, QString type)
     {
         Weapon *gun = new Weapon(x, y, type);
         map->Weapons.append(gun);
-        map->map[Map::getPair(x, y)] = Map::BLANK;
+        map->map[Map::getPair(xCeil, yCeil)] = Map::BLANK;
         rect = new QGraphicsRectItem(x, y, Weapon::width, Weapon::height);
         rect->setBrush(QBrush(type == "Gun1" ? Qt::yellow : Qt::magenta));
     }

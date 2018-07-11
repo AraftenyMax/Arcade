@@ -11,13 +11,14 @@ public:
     Player();
     QString serialize();
     void keyPressEvent(QKeyEvent *event);
+    void setCoords(int x, int y);
     static const int width = 10, height = 10;
     static const int markerType = 0;
+    int currentX, currentY;
 signals:
-    void onKeyPressed(QString action, int x, int y);
+    void onKeyPressed(QString action, int oldX, int oldY, int newX, int newY);
 private:
     int healthPoints = 100;
-    int visibleRange = 50;
     QString name;
 };
 

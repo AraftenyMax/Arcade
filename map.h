@@ -28,7 +28,7 @@ public:
     void copyMap();
     void initMap();
     void startWatching();
-    void doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY);
+    void doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy *enemy);
     static QPair<int, int> getPair(int x, int y);
     QString direction;
     QList<Mesh*> Meshes;
@@ -40,10 +40,10 @@ public:
     QHash<QPair<int, int>, int> map;
     static const int BLANK = -2;
 signals:
-    void onKeyPressed(QString action, int x, int y);
+    void onKeyPressed(QString action, int oldX, int oldY, int newX, int newY);
     void moveEnemiesTimeout();
 public slots:
-    void tryPerformAction(QString action, int x, int y);
+    void tryPerformAction(QString action, int oldX, int oldY, int newX, int newY);
     void moveEnemies();
 private:
     const int WALL = Mesh::markerType;

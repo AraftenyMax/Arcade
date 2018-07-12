@@ -31,43 +31,9 @@ QPair<int, int> Enemy::getCoords()
 
 void Enemy::move(int xCeil, int yCeil)
 {
-    int tempX = xCeil*10, tempY = yCeil*10;
-    int xDiff, yDiff;
-    if(tempX > x() && tempY == y())
-    {
-        xDiff = speed;
-        yDiff = 0;
-    } else if (tempX < x() && tempY == y())
-    {
-        xDiff = -speed;
-        yDiff = 0;
-    } else if (tempX == x() && tempY > y()){
-        xDiff = 0;
-        yDiff = speed;
-    } else if (tempX == x() && tempY < y())
-    {
-        xDiff = 0;
-        yDiff = -speed;
-    } else if (tempX > x() && tempY > x())
-    {
-        xDiff = speed;
-        yDiff = speed;
-    } else if (tempX < x() && tempY < y())
-    {
-        xDiff = -speed;
-        yDiff = -speed;
-    } else if (tempX > x() && tempY < y())
-    {
-        xDiff = speed;
-        yDiff = -speed;
-    } else if (tempX < x() && tempY > y())
-    {
-        xDiff = -speed;
-        yDiff = speed;
-    }
-    currentX += xDiff;
-    currentY += yDiff;
-    setPos(x() + xDiff, y() + yDiff);
+    currentX += xCeil;
+    currentY += yCeil;
+    setPos(x() + xCeil, y() + yCeil);
 }
 
 bool Enemy::isPlayerNear(int playerX, int playerY)

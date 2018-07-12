@@ -17,6 +17,7 @@ public:
     void move(int xCeil, int yCeil);
     void setCoords(int x, int y);
     bool isPlayerNear(int playerX, int playerY);
+    int calculateDistance(int playerX, int playerY);
     QPair<int, int> getCoords();
     int currentX, currentY;
     static const int markerType = -4;

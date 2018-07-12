@@ -34,7 +34,6 @@ SOURCES += \
     bullet.cpp \
     levelconstructor.cpp \
     lvlconstructorscene.cpp \
-    weapon.cpp \
     bonus.cpp \
     playwindow.cpp
 
@@ -47,8 +46,8 @@ HEADERS += \
     bullet.h \
     levelconstructor.h \
     lvlconstructorscene.h \
-    weapon.h \
-    playwindow.h
+    playwindow.h \
+    bonus.h
 
 FORMS += \
         mainwindow.ui \

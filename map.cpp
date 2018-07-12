@@ -8,6 +8,7 @@
 #include <QHash>
 #include <QPair>
 #include <QTextStream>
+#include <QGraphicsScene>
 
 Map::Map(int width, int height)
 {
@@ -25,6 +26,13 @@ void Map::moveEnemies()
             if(e->isPlayerNear(playerX, playerY))
                 e->makeAgro();
             else continue;
+        int d = e->calculateDistance(playerX, playerY);
+        if(d == 10)
+        {
+            if(player->decreaseHP())
+                qDebug() << "Player is died";
+            continue;
+        }
         doYouKnowDaWay(e->currentX, e->currentY, playerX, playerY, e);
     }
 }
@@ -133,20 +141,44 @@ void Map::setPlayer(Player *p)
 
 bool Map::isOutOfBounds(int x, int y)
 {
-    qDebug() << x << ":" << y;
-    return (x > width && y > height);
+    return (x < 0 || y < 0 || x > width-10 || y > height-10);
 }
 
 void Map::tryPerformAction(QString action, int oldX, int oldY, int newX, int newY)
 {
     if (action == "move")
     {
-        qDebug() << "I'am going to be at " << newX << ":" << newY;
+        int x = newX/10, y = newY/10;
         int xDiff = newX - oldX, yDiff = newY - oldY;
-        if(map[getPair(newX/10, newY/10)] == WALL || newX < 0 || newY < 0 || newX > width-10 || newY > height-10)
+        if(map[getPair(x, y)] == WALL || isOutOfBounds(newX, newY))
             return;
+        if(map[getPair(x, y)] == Bonus::markerHealthBonus || map[getPair(x, y)] == Bonus::markerAttackBonus)
+        {
+            QList<Bonus*>::iterator iter = Bonuses.begin();
+            for(; iter != Bonuses.end(); ++iter)
+            {
+                Bonus *b = *iter;
+                int bonusX = b->currentX/10, bonusY = b->currentY/10;
+                if(bonusX == x && bonusY == y){
+                    player->pickUpBonus(b);
+                    Bonuses.erase(iter);
+                    scene->removeItem(b);
+                    break;
+                }
+            }
+        }
         map[getPair(oldX/10, oldY/10)] = BLANK;
         map[getPair(newX/10, newY/10)] = player->markerType;
         player->move(xDiff, yDiff);
     }
+}
+
+void Map::fireBullet()
+{
+
+}
+
+void Map::setScene(QGraphicsScene *scene)
+{
+    this->scene = scene;
 }

@@ -6,7 +6,6 @@
 #include "player.h"
 #include "lvlconstructorscene.h"
 #include "bonus.h"
-#include "weapon.h"
 
 #include <QDebug>
 #include <QBrush>
@@ -103,11 +102,6 @@ void LevelConstructor::on_saveButton_clicked()
     if (map->Bonuses.length() != 0){
         foreach (Bonus *b, map->Bonuses) {
             mapData->append(b->serialize());
-        }
-    }
-    if (map->Weapons.length() != 0){
-        foreach (Weapon *w, map->Weapons) {
-            mapData->append(w->serialize());
         }
     }
     saveMap(mapData);
@@ -219,17 +213,13 @@ void LevelConstructor::createObject(int x, int y)
     }
     if ("HealthBonus" == state || "AttackBonus" == state)
     {
-        Bonus *bonus = new Bonus(x, y, state);
+        Bonus *bonus = new Bonus();
+        bonus->setType(state);
+        bonus->setX(x);
+        bonus->setY(y);
         map->Bonuses.append(bonus);
         rect = new QGraphicsRectItem(x, y, Bonus::width, Bonus::height);
         rect->setBrush(QBrush(state == "HealthBonus" ? Qt::blue : Qt::cyan));
-    }
-    if ("Gun1" == state || "Gun2" == state)
-    {
-        Weapon *gun = new Weapon(x, y, state);
-        map->Weapons.append(gun);
-        rect = new QGraphicsRectItem(x, y, Weapon::width, Weapon::height);
-        rect->setBrush(QBrush(state == "Gun1" ? Qt::yellow : Qt::magenta));
     }
     map->Markers.append(rect);
     this->scene->addItem(rect);

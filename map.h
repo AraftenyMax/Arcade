@@ -4,7 +4,6 @@
 #include "mesh.h"
 #include "player.h"
 #include "bonus.h"
-#include "weapon.h"
 
 #include <QList>
 #include <QObject>
@@ -23,6 +22,7 @@ public:
     void setPlayer(Player *p);
     void copyMap();
     void initMap();
+    void setScene(QGraphicsScene *scene);
     void startWatching();
     bool isOutOfBounds(int x, int y);
     void doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy *enemy);
@@ -31,17 +31,19 @@ public:
     QList<Mesh*> Meshes;
     QList<Enemy*> Enemies;
     QList<Bonus*> Bonuses;
-    QList<Weapon*> Weapons;
     QList<QGraphicsRectItem*> Markers;
     Player *player = nullptr;
+    QGraphicsScene *scene;
     QHash<QPair<int, int>, int> map;
     static const int BLANK = -2;
 signals:
+    void onFireBullet(Bullet *b, QString direction, int startX, int startY);
     void onKeyPressed(QString action, int oldX, int oldY, int newX, int newY);
     void moveEnemiesTimeout();
 public slots:
     void tryPerformAction(QString action, int oldX, int oldY, int newX, int newY);
     void moveEnemies();
+    void fireBullet();
 private:
     const int WALL = Mesh::markerType;
     int width, height;

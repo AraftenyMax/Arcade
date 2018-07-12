@@ -36,10 +36,15 @@ void Enemy::move(int xCeil, int yCeil)
     setPos(x() + xCeil, y() + yCeil);
 }
 
+int Enemy::calculateDistance(int playerX, int playerY)
+{
+    return sqrt(pow(playerX - currentX, 2) + pow(playerY - currentY, 2));
+}
+
 
 bool Enemy::isPlayerNear(int playerX, int playerY)
 {
-    return sqrt(pow(playerX - this->rect().x(), 2) + pow(playerY - this->rect().y(), 2)) <= agroRange ? true : false;
+    return calculateDistance(playerX, playerY) <= agroRange ? true : false;
 }
 
 QString Enemy::serialize()

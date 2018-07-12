@@ -4,6 +4,8 @@
 #include <QKeyEvent>
 #include <QRect>
 
+#include "bonus.h"
+
 Player::Player()
 {
 
@@ -38,6 +40,22 @@ void Player::keyPressEvent(QKeyEvent *event)
             }
     }
     emit onKeyPressed("move", oldX, oldY, newX, newY);
+}
+
+bool Player::decreaseHP()
+{
+    healthPoints -= 20;
+    if(healthPoints <= 0)
+        return true;
+    return false;
+}
+
+void Player::pickUpBonus(Bonus *b)
+{
+    if (b->getType() == "HealthBonus")
+        healthPoints += b->getValue();
+    else if (b->getType() == "AttackBonus")
+        attackPoints += b->getValue();
 }
 
 void Player::move(int xDiff, int yDiff)

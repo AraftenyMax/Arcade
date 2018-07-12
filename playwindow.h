@@ -28,7 +28,7 @@ private:
     QGraphicsScene *scene;
     int width = 600;
     int height = 300;
-    QString testMap = "G:/Development/build-Game-Desktop_Qt_5_10_1_MinGW_32bit-Debug/finallyItsWorking.csv";
+    QString testMap = "G:/Development/build-Game-Desktop_Qt_5_10_1_MinGW_32bit-Debug/bonusesMap.csv";
     QList<QGraphicsRectItem*> markers;
     Map *map;
 };

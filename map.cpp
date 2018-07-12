@@ -60,24 +60,18 @@ void Map::doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy
     copyMap();
     int len;
     QTextStream out(stdout);
-    int xPlayerCeil = playerX/10, yPlayerCeil = playerY/10, xEnemyCeil = enemyX/10, yEnemyCeil = enemyY/10;
+    int xPlayerCoord = playerX/10, yPlayerCoord = playerY/10, xEnemyCoord = enemyX/10, yEnemyCoord = enemyY/10;
     int H = height/10;
     int W = width/10;
     int d, x, y, k;
     int dx[4] = {1, 0, -1, 0};
     int dy[4] = {0, 1, 0, -1};
     bool stop;
-    temp_map[getPair(xPlayerCeil, yPlayerCeil)] = BLANK;
-    temp_map[getPair(xEnemyCeil, yEnemyCeil)] = 0;
+    temp_map[getPair(xPlayerCoord, yPlayerCoord)] = BLANK;
+    temp_map[getPair(xEnemyCoord, yEnemyCoord)] = 0;
     int way_container_len = W*H;
     int px[way_container_len], py[way_container_len];
     d = 0;
-    qDebug() << "Old map";
-    for(int i = 0; i < W; i++){
-        for(int j = 0; j < H; j++){
-            out << temp_map[getPair(i, j)];
-        }
-        out << endl;}
     do{
         stop = true;
         for(x = 0; x < W; ++x)
@@ -95,22 +89,14 @@ void Map::doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy
             }
             }
         d++;
-    }while(!stop && temp_map[getPair(xPlayerCeil, yPlayerCeil)] == BLANK);
-    if(temp_map[getPair(xPlayerCeil, yPlayerCeil)] == BLANK)
+    }while(!stop && temp_map[getPair(xPlayerCoord, yPlayerCoord)] == BLANK);
+    if(temp_map[getPair(xPlayerCoord, yPlayerCoord)] == BLANK)
     {
-        qDebug() << "Could not find da way";
         return;
     }
-    qDebug() << "Marked map";
-    for(int i = 0; i < W; i++){
-        for(int j = 0; j < H; j++){
-            out << temp_map[getPair(i, j)];
-        }
-        out << endl;
-    }
-    len = temp_map[getPair(xPlayerCeil, yPlayerCeil)];
-    x = xPlayerCeil;
-    y = yPlayerCeil;
+    len = temp_map[getPair(xPlayerCoord, yPlayerCoord)];
+    x = xPlayerCoord;
+    y = yPlayerCoord;
     d = len;
     while(d > 0){
         px[d] = x;
@@ -129,8 +115,8 @@ void Map::doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy
                 }
         }
     }
-    px[0] = xEnemyCeil;
-    py[0] = yEnemyCeil;
+    px[0] = xEnemyCoord;
+    py[0] = yEnemyCoord;
     enemy->move(px[1]*10 - enemyX, py[1]*10 - enemyY);
     map[enemy->getCoords()] = Enemy::markerType;
     map[getPair(px[0], py[0])] = BLANK;
@@ -145,44 +131,22 @@ void Map::setPlayer(Player *p)
     }
 }
 
+bool Map::isOutOfBounds(int x, int y)
+{
+    qDebug() << x << ":" << y;
+    return (x > width && y > height);
+}
+
 void Map::tryPerformAction(QString action, int oldX, int oldY, int newX, int newY)
 {
     if (action == "move")
     {
+        qDebug() << "I'am going to be at " << newX << ":" << newY;
+        int xDiff = newX - oldX, yDiff = newY - oldY;
+        if(map[getPair(newX/10, newY/10)] == WALL || newX < 0 || newY < 0 || newX > width-10 || newY > height-10)
+            return;
         map[getPair(oldX/10, oldY/10)] = BLANK;
         map[getPair(newX/10, newY/10)] = player->markerType;
+        player->move(xDiff, yDiff);
     }
-}
-
-void Map::checkNearestMeshes(int enemyX, int enemyY)
-{
-    foreach(Mesh* m, Meshes)
-    {
-
-    }
-}
-
-void Map::checkNearestEnemies(int x, int y)
-{
-    foreach (Enemy* e, Enemies) {
-        if(e->isPlayerNear(x, y)){
-            e->makeAgro();
-            doYouKnowDaWay(e->x(), e->y(), x, y, e);
-        }
-    }
-}
-
-void Map::checkNearestBonuses(int x, int y)
-{
-
-}
-
-void Map::checkNearestWeapons(int x, int y)
-{
-
-}
-
-void Map::checkBounds(int x, int y)
-{
-
 }

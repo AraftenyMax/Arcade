@@ -36,6 +36,7 @@ void Enemy::move(int xCeil, int yCeil)
     setPos(x() + xCeil, y() + yCeil);
 }
 
+
 bool Enemy::isPlayerNear(int playerX, int playerY)
 {
     return sqrt(pow(playerX - this->rect().x(), 2) + pow(playerY - this->rect().y(), 2)) <= agroRange ? true : false;

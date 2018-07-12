@@ -19,7 +19,7 @@ public:
     bool isPlayerNear(int playerX, int playerY);
     QPair<int, int> getCoords();
     int currentX, currentY;
-    static const int markerType = -1;
+    static const int markerType = -4;
     static const int width = 10, height = 10;
 private:
     QString name;

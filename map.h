@@ -19,15 +19,12 @@ public:
     Map(int width, int height);
     void Draw();
     void Update();
-    void checkNearestMeshes(int x, int y);
-    void checkNearestEnemies(int x, int y);
-    void checkNearestBonuses(int x, int y);
-    void checkNearestWeapons(int x, int y);
     void checkBounds(int x, int y);
     void setPlayer(Player *p);
     void copyMap();
     void initMap();
     void startWatching();
+    bool isOutOfBounds(int x, int y);
     void doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy *enemy);
     static QPair<int, int> getPair(int x, int y);
     QString direction;

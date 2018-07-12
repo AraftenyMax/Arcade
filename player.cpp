@@ -17,30 +17,34 @@ void Player::setCoords(int x, int y)
 
 void Player::keyPressEvent(QKeyEvent *event)
 {
+    int newX = currentX, newY = currentY;
     int oldX = currentX, oldY = currentY;
     switch(event->key()){
             case Qt::Key_Up:{
-                setPos(x(), y() - 10);
-                currentY -= 10;
+                newY -= speed;
                 break;
             }
             case Qt::Key_Down:{
-                setPos(x(), y() + 10);
-                currentY += 10;
+                newY += speed;
                 break;
             }
             case Qt::Key_Left:{
-                setPos(x() - 10, y());
-                currentX -= 10;
+                newX -= speed;
                 break;
             }
             case Qt::Key_Right:{
-                setPos(x() + 10, y());
-                currentX += 10;
+                newX += speed;
                 break;
             }
     }
-    emit onKeyPressed("move", oldX, oldY, currentX, currentY);
+    emit onKeyPressed("move", oldX, oldY, newX, newY);
+}
+
+void Player::move(int xDiff, int yDiff)
+{
+    currentX += xDiff;
+    currentY += yDiff;
+    setPos(x() + xDiff, y() + yDiff);
 }
 
 QString Player::serialize()

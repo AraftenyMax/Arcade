@@ -67,8 +67,8 @@ void Map::doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy
     int dx[4] = {1, 0, -1, 0};
     int dy[4] = {0, 1, 0, -1};
     bool stop;
-    temp_map[getPair(yPlayerCeil, xPlayerCeil)] = BLANK;
-    temp_map[getPair(yEnemyCeil, xEnemyCeil)] = 0;
+    temp_map[getPair(xPlayerCeil, yPlayerCeil)] = BLANK;
+    temp_map[getPair(xEnemyCeil, yEnemyCeil)] = 0;
     int way_container_len = W*H;
     int px[way_container_len], py[way_container_len];
     d = 0;
@@ -80,26 +80,23 @@ void Map::doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy
         out << endl;}
     do{
         stop = true;
-        for(y = 0; y < W; ++y)
-            for(x = 0; x < H; ++x){
-                if(temp_map[getPair(y, x)] == WALL) continue;
-                if(temp_map[getPair(y, x)] == d){
+        for(x = 0; x < W; ++x)
+            for(y = 0; y < H; ++y){
+                if(temp_map[getPair(x, y)] == WALL) continue;
+                if(temp_map[getPair(x, y)] == d){
                 for ( k = 0; k < 4; ++k ) {
                     int iy = y + dy[k], ix = x + dx[k];
-                    if(iy >= 0 && iy < H && ix >= 0 && ix < W && temp_map[getPair(iy, ix)] == BLANK)
+                    if(iy >= 0 && iy < H && ix >= 0 && ix < W && temp_map[getPair(ix, iy)] == BLANK)
                     {
-                        int point = temp_map[getPair(iy, ix)];
-                        if(point == WALL)
-                            qDebug() << "Damn sir, it's wall!";
                         stop = false;
-                        temp_map[getPair(iy, ix)] = d + 1;
+                        temp_map[getPair(ix, iy)] = d + 1;
                     }
                 }
             }
             }
         d++;
-    }while(!stop && temp_map[getPair(yPlayerCeil, xPlayerCeil)] == BLANK);
-    if(temp_map[getPair(yPlayerCeil, xPlayerCeil)] == BLANK)
+    }while(!stop && temp_map[getPair(xPlayerCeil, yPlayerCeil)] == BLANK);
+    if(temp_map[getPair(xPlayerCeil, yPlayerCeil)] == BLANK)
     {
         qDebug() << "Could not find da way";
         return;
@@ -111,7 +108,7 @@ void Map::doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy
         }
         out << endl;
     }
-    len = temp_map[getPair(yPlayerCeil, xPlayerCeil)];
+    len = temp_map[getPair(xPlayerCeil, yPlayerCeil)];
     x = xPlayerCeil;
     y = yPlayerCeil;
     d = len;
@@ -122,7 +119,7 @@ void Map::doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy
         for(int k = 0; k < 4; ++k)
         {
             int iy = y + dy[k], ix = x + dx[k];
-            int point = temp_map[getPair(iy, ix)];
+            int point = temp_map[getPair(ix, iy)];
             if(iy >= 0 && iy < H && ix >= 0 && ix < W)
                 if(point == d)
                 {

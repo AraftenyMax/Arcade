@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QHash>
 #include <QPair>
+#include <QTextStream>
 
 Map::Map(int width, int height)
 {
@@ -24,7 +25,6 @@ void Map::moveEnemies()
             if(e->isPlayerNear(playerX, playerY))
                 e->makeAgro();
             else continue;
-        qDebug() << "Enemy: " << e->currentX << ":" << e->currentY;
         doYouKnowDaWay(e->currentX, e->currentY, playerX, playerY, e);
     }
 }
@@ -59,6 +59,7 @@ void Map::doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy
 {
     copyMap();
     int len;
+    QTextStream out(stdout);
     int xPlayerCeil = playerX/10, yPlayerCeil = playerY/10, xEnemyCeil = enemyX/10, yEnemyCeil = enemyY/10;
     int H = height/10;
     int W = width/10;
@@ -67,18 +68,16 @@ void Map::doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy
     int dy[4] = {0, 1, 0, -1};
     bool stop;
     temp_map[getPair(xPlayerCeil, yPlayerCeil)] = BLANK;
+    temp_map[getPair(xEnemyCeil, yEnemyCeil)] = 0;
     int way_container_len = W*H;
     int px[way_container_len], py[way_container_len];
-
     d = 0;
-    temp_map[getPair(xEnemyCeil, yEnemyCeil)] = 0;
     do{
         stop = true;
         for(y = 0; y < W; ++y)
             for(x = 0; x < H; ++x)
+                if(temp_map[getPair(y, x)] == d){
                 for ( k = 0; k < 4; ++k ) {
-                if(temp_map[getPair(y, x)] == d)
-                {
                     int iy = y + dy[k], ix = x + dx[k];
                     if(iy >= 0 && iy < H && ix >= 0 && ix < W && temp_map[getPair(iy, ix)] == BLANK)
                     {
@@ -94,9 +93,16 @@ void Map::doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy
         qDebug() << "Could not find da way";
         return;
     }
-    len = temp_map[getPair(xPlayerCeil, yEnemyCeil)];
+    for(int i = 0; i < W; i++){
+        for(int j = 0; j < H; j++){ if (temp_map[getPair(i, j)] >= 0){ out << temp_map[getPair(i, j)] << " "; continue;};
+            out << temp_map[getPair(i, j)];
+        }
+        out << endl;
+    }
+    len = temp_map[getPair(xPlayerCeil, yPlayerCeil)];
     x = xPlayerCeil;
     y = yPlayerCeil;
+    d = len;
     while(d > 0){
         px[d] = x;
         py[d] = y;
@@ -104,7 +110,7 @@ void Map::doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy
         for(int k = 0; k < 4; ++k)
         {
             int iy = y + dy[k], ix = x + dx[k];
-            if(iy >= 0 && iy < H && ix >= 0 && ix < W && map[getPair(iy, ix)] == d)
+            if(iy >= 0 && iy < H && ix >= 0 && ix < W && temp_map[getPair(iy, ix)] == d)
             {
                 x = x + dx[k];
                 y = y + dy[k];
@@ -115,7 +121,8 @@ void Map::doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy
     px[0] = xEnemyCeil;
     py[0] = yEnemyCeil;
     enemy->move(px[1]*10 - enemyX, py[1]*10 - enemyY);
-    map[enemy->getCoords()] = BLANK;
+    map[enemy->getCoords()] = Enemy::markerType;
+    map[getPair(px[0], py[0])] = BLANK;
 }
 
 void Map::setPlayer(Player *p)

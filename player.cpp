@@ -38,6 +38,9 @@ void Player::keyPressEvent(QKeyEvent *event)
                 newX += speed;
                 break;
             }
+            case Qt::Key_Space:{
+
+            }
     }
     emit onKeyPressed("move", oldX, oldY, newX, newY);
 }

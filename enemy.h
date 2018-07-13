@@ -17,6 +17,7 @@ public:
     void move(int xCeil, int yCeil);
     void setCoords(int x, int y);
     bool isPlayerNear(int playerX, int playerY);
+    bool decreaseHP(int damage);
     int calculateDistance(int playerX, int playerY);
     QPair<int, int> getCoords();
     int currentX, currentY;
@@ -24,7 +25,7 @@ public:
     static const int width = 10, height = 10;
 private:
     QString name;
-    int HP, strength;
+    int HP = 100;
     bool isAgro;
     int agroRange = 50;
     int speed = 10;

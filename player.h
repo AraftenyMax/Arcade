@@ -19,14 +19,13 @@ public:
     bool decreaseHP();
     void pickUpBonus(Bonus *b);
     static const int width = 10, height = 10;
+    int attackPoints = 20;
     static const int markerType = -3;
     int currentX, currentY;
+    int healthPoints = 100;
 signals:
     void onKeyPressed(QString action, int oldX, int oldY, int newX, int newY);
-    void onFireBullet(Bullet *b, QString direction, int startX, int startY);
 private:
-    int attackPoints = 20;
-    int healthPoints = 100;
     int speed = 10;
     QString name;
 };

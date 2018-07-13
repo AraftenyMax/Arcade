@@ -8,6 +8,7 @@
 #include "lvlconstructorscene.h"
 #include <QDialog>
 #include <QObject>
+#include <QCloseEvent>
 
 namespace Ui {
 class LevelConstructor;
@@ -50,6 +51,8 @@ private slots:
     void createObject(int x, int y);
 
     void deleteObject(int x, int y);
+
+    void closeEvent(QCloseEvent *event);
 
 signals:
     void mousePressed(int x, int y);

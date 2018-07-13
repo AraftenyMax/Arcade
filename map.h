@@ -37,14 +37,15 @@ public:
     QHash<QPair<int, int>, int> map;
     static const int BLANK = -2;
 signals:
-    void onFireBullet(Bullet *b, QString direction, int startX, int startY);
     void onKeyPressed(QString action, int oldX, int oldY, int newX, int newY);
     void moveEnemiesTimeout();
+    void finishGame();
+    void onHpChanged(int Hp);
 public slots:
     void tryPerformAction(QString action, int oldX, int oldY, int newX, int newY);
     void moveEnemies();
-    void fireBullet();
 private:
+    QTimer *moveEnemiesTimer;
     const int WALL = Mesh::markerType;
     int width, height;
     int playerAgroDistance = 50;

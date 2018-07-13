@@ -9,6 +9,7 @@
 #include <QPair>
 #include <QTextStream>
 #include <QGraphicsScene>
+#include <QMessageBox>
 
 Map::Map(int width, int height)
 {
@@ -29,8 +30,14 @@ void Map::moveEnemies()
         int d = e->calculateDistance(playerX, playerY);
         if(d == 10)
         {
-            if(player->decreaseHP())
-                qDebug() << "Player is died";
+            if(player->decreaseHP()){
+                QMessageBox *b = new QMessageBox;
+                b->setText("Вы проиграли!");
+                b->show();
+                disconnect(moveEnemiesTimer, SIGNAL(timeout()), this, SLOT(moveEnemies()));
+                emit finishGame();
+            }
+            emit onHpChanged(player->healthPoints);
             continue;
         }
         doYouKnowDaWay(e->currentX, e->currentY, playerX, playerY, e);
@@ -39,9 +46,9 @@ void Map::moveEnemies()
 
 void Map::startWatching()
 {
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(moveEnemies()));
-    timer->start(1000);
+    moveEnemiesTimer = new QTimer(this);
+    connect(moveEnemiesTimer, SIGNAL(timeout()), this, SLOT(moveEnemies()));
+    moveEnemiesTimer->start(1000);
 }
 
 QPair<int, int> Map::getPair(int x, int y)
@@ -126,7 +133,7 @@ void Map::doYouKnowDaWay(int enemyX, int enemyY, int playerX, int playerY, Enemy
     px[0] = xEnemyCoord;
     py[0] = yEnemyCoord;
     enemy->move(px[1]*10 - enemyX, py[1]*10 - enemyY);
-    map[enemy->getCoords()] = Enemy::markerType;
+    map[getPair(px[1], py[1])] = Enemy::markerType;
     map[getPair(px[0], py[0])] = BLANK;
 }
 
@@ -150,9 +157,10 @@ void Map::tryPerformAction(QString action, int oldX, int oldY, int newX, int new
     {
         int x = newX/10, y = newY/10;
         int xDiff = newX - oldX, yDiff = newY - oldY;
-        if(map[getPair(x, y)] == WALL || isOutOfBounds(newX, newY))
+        int nextSquare = map[getPair(x, y)];
+        if(nextSquare == WALL || isOutOfBounds(newX, newY))
             return;
-        if(map[getPair(x, y)] == Bonus::markerHealthBonus || map[getPair(x, y)] == Bonus::markerAttackBonus)
+        if(nextSquare == Bonus::markerHealthBonus || nextSquare == Bonus::markerAttackBonus)
         {
             QList<Bonus*>::iterator iter = Bonuses.begin();
             for(; iter != Bonuses.end(); ++iter)
@@ -161,21 +169,36 @@ void Map::tryPerformAction(QString action, int oldX, int oldY, int newX, int new
                 int bonusX = b->currentX/10, bonusY = b->currentY/10;
                 if(bonusX == x && bonusY == y){
                     player->pickUpBonus(b);
+                    emit onHpChanged(player->healthPoints);
                     Bonuses.erase(iter);
                     scene->removeItem(b);
                     break;
                 }
             }
         }
+        if(nextSquare == Enemy::markerType)
+        {
+            QList<Enemy*>::iterator iter = Enemies.begin();
+            for(; iter != Enemies.end(); ++iter)
+            {
+                Enemy *e = *iter;
+                int enemyX = e->currentX, enemyY = e->currentY;
+                if(enemyX == newX && enemyY == newY){
+                    if(!e->decreaseHP(player->attackPoints)){
+                        scene->removeItem(e);
+                        Enemies.erase(iter);
+                        if(Enemies.length() == 0){
+
+                        }
+                    }else
+                        return;
+                }
+            }
+        }
         map[getPair(oldX/10, oldY/10)] = BLANK;
-        map[getPair(newX/10, newY/10)] = player->markerType;
+        map[getPair(x, y)] = player->markerType;
         player->move(xDiff, yDiff);
     }
-}
-
-void Map::fireBullet()
-{
-
 }
 
 void Map::setScene(QGraphicsScene *scene)

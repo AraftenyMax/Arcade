@@ -41,6 +41,11 @@ int Enemy::calculateDistance(int playerX, int playerY)
     return sqrt(pow(playerX - currentX, 2) + pow(playerY - currentY, 2));
 }
 
+bool Enemy::decreaseHP(int damage)
+{
+    HP -= damage;
+    return HP > 0 ? true : false;
+}
 
 bool Enemy::isPlayerNear(int playerX, int playerY)
 {

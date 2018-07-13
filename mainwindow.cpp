@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "levelconstructor.h"
-#include "playwindow.h"
+#include "choosewindow.h"
 #include "ui_mainwindow.h"
 #include "myrect.h"
 
@@ -33,6 +33,6 @@ void MainWindow::on_exitButton_clicked()
 
 void MainWindow::on_gameButton_clicked()
 {
-    PlayWindow *window = new PlayWindow();
-    window->show();
+    ChooseWindow *w = new ChooseWindow();
+    w->show();
 }

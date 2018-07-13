@@ -173,6 +173,12 @@ void LevelConstructor::createObject(int x, int y)
     QGraphicsRectItem *rect;
     x -= x%10;
     y -= y%10;
+
+    foreach (QGraphicsRectItem* i, map->Markers) {
+        if(i->rect().x() == x && y == i->rect().y())
+            return;
+    }
+
     if (state == "")
     {
         QMessageBox msg;
@@ -185,15 +191,19 @@ void LevelConstructor::createObject(int x, int y)
         map->Meshes.append(mesh);
         mesh->setX(x);
         mesh->setY(y);
+        mesh->setCoords(x, y);
         rect = new QGraphicsRectItem(x, y, Mesh::width, Mesh::height);
+        mesh->setRect(x, y, Mesh::width, Mesh::height);
         rect->setBrush(QBrush(Qt::black));
     }
     if("Enemy" == state){
         Enemy *enemy = new Enemy();
         map->Enemies.append(enemy);
+        enemy->setCoords(x, y);
         enemy->setX(x);
         enemy->setY(y);
         rect = new QGraphicsRectItem(x, y, Enemy::width, Enemy::height);
+        enemy->setRect(x, y, Enemy::width, Enemy::height);
         rect->setBrush(QBrush(Qt::red));
     }
     if("Player" == state){
@@ -208,7 +218,9 @@ void LevelConstructor::createObject(int x, int y)
         map->player = player;
         player->setX(x);
         player->setY(y);
+        player->setCoords(x, y);
         rect = new QGraphicsRectItem(x, y, Player::width, Player::height);
+        player->setRect(x, y, Player::width, Player::height);
         rect->setBrush(QBrush(Qt::green));
     }
     if ("HealthBonus" == state || "AttackBonus" == state)
@@ -217,8 +229,10 @@ void LevelConstructor::createObject(int x, int y)
         bonus->setType(state);
         bonus->setX(x);
         bonus->setY(y);
+        bonus->setCoords(x, y);
         map->Bonuses.append(bonus);
         rect = new QGraphicsRectItem(x, y, Bonus::width, Bonus::height);
+        bonus->setRect(x, y, Bonus::width, Bonus::height);
         rect->setBrush(QBrush(state == "HealthBonus" ? Qt::blue : Qt::cyan));
     }
     map->Markers.append(rect);
@@ -241,4 +255,12 @@ void LevelConstructor::on_loadMap_clicked()
 void LevelConstructor::on_deleteButton_clicked()
 {
     mode = "Delete";
+}
+
+void LevelConstructor::closeEvent(QCloseEvent *event)
+{
+    disconnect(scene, SIGNAL(mousePressed(int,int)), this, SLOT(obtainCoordinates(int,int)));
+    delete map;
+    delete scene;
+    QWidget::closeEvent(event);
 }

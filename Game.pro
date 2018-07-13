@@ -35,7 +35,8 @@ SOURCES += \
     levelconstructor.cpp \
     lvlconstructorscene.cpp \
     bonus.cpp \
-    playwindow.cpp
+    playwindow.cpp \
+    choosewindow.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -47,9 +48,11 @@ HEADERS += \
     levelconstructor.h \
     lvlconstructorscene.h \
     playwindow.h \
-    bonus.h
+    bonus.h \
+    choosewindow.h
 
 FORMS += \
         mainwindow.ui \
     levelconstructor.ui \
-    playwindow.ui
+    playwindow.ui \
+    choosewindow.ui

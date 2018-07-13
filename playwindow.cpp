@@ -19,6 +19,10 @@ PlayWindow::PlayWindow(QWidget *parent) :
     ui(new Ui::PlayWindow)
 {
     ui->setupUi(this);
+}
+
+void PlayWindow::startGame(QString mapName)
+{
     map = new Map(width, height);
     scene = new QGraphicsScene(this);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -26,9 +30,12 @@ PlayWindow::PlayWindow(QWidget *parent) :
     ui->graphicsView->setFixedSize(width, height);
     scene->setSceneRect(0, 0, width, height);
     ui->graphicsView->setScene(scene);
-    loadMap(testMap);
+    loadMap(mapName);
     drawMap();
     map->setScene(scene);
+    ui->hpIndicator->setText(QString("Здоровье: " + QString::number(map->player->healthPoints)));
+    connect(map, SIGNAL(finishGame()), this, SLOT(CloseWindow()));
+    connect(map, SIGNAL(onHpChanged(int)), this, SLOT(changeHp(int)));
 }
 
 void PlayWindow::loadMap(QString path)
@@ -119,7 +126,24 @@ void PlayWindow::drawMap()
     scene->addItem(map->player);
 }
 
+void PlayWindow::closeEvent(QCloseEvent *event)
+{
+    delete map;
+    QWidget::closeEvent(event);
+}
+
 PlayWindow::~PlayWindow()
 {
     delete ui;
+}
+
+void PlayWindow::CloseWindow()
+{
+    delete map;
+    deleteLater();
+}
+
+void PlayWindow::changeHp(int HP)
+{
+    ui->hpIndicator->setText(QString("Здоровье: " + QString::number(HP)));
 }
